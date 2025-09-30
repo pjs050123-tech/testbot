@@ -1,0 +1,20 @@
+name: Daily SPX Signals
+
+on:
+  schedule:
+    - cron: "0 0 * * *"   # 매일 UTC 0시 = 한국 시간 오전 9시
+  workflow_dispatch: {}   # 수동 실행 버튼도 켜두기
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install yfinance pandas numpy requests
+      - env:
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID:   ${{ secrets.TG_CHAT_ID }}
+        run: python spx_macd_obv_signal.py
